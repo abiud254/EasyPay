@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.http import urlsafe_base64_decode
 
 from management.models import Employee
+from management.utils import get_client_ip, log_activity
 
 from .utils import send_otp, send_password_reset, verify_otp
 
@@ -147,6 +148,12 @@ def reset_password_form(request, uidb64, token):
             user.save()
             cache.delete(token)  # Invalidate the token
             messages.success(request, "Password reset successfully.")
+            # Log the activity
+            log_activity(
+                user=user,
+                action="Password Reset",
+                ip_address=get_client_ip(request),
+            )
             return redirect("login_employee")
 
     return render(

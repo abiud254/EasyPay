@@ -1,4 +1,4 @@
-{% extends "layouts/admin_dashboard.html" %}
+{% extends "layouts/admin_dashboard_layout.html" %}
 {% load humanize %}
 {% load static %}
 {% block title %}
@@ -135,11 +135,12 @@
     </main>
   </div>
   <!-- MODALS -->
-  {% include "modals/add_employee_modal.html" %}
-  {% include "modals/add_allowance_modal.html" %}
-  {% include "modals/add_deduction_modal.html" %}
-  {% include "modals/add_branch_modal.html" %}
-  {% include "modals/add_department_modal.html" %}
+  {% include "add_modals/add_employee_modal.html" %}
+  {% include "add_modals/add_jobgroup_modal.html" %}
+  {% include "add_modals/add_allowance_modal.html" %}
+  {% include "add_modals/add_deduction_modal.html" %}
+  {% include "add_modals/add_branch_modal.html" %}
+  {% include "add_modals/add_department_modal.html" %}
   <!-- JAVASCRIPTS -->
   <script src="{% static 'js/datatables.js' %}"></script>
 {% endblock content %}

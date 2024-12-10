@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -42,33 +44,32 @@ class JobGroup(models.Model):
 
     def calculate_total_allowances(self):
         """Calculate the total allowances for this job group."""
-        total = 0
+        total = Decimal(0)
         for job_group_allowance in self.jobgroupallowance_set.all():
-            allowance = job_group_allowance.allowance
-            if allowance.calculation_type == "percentage":
-                total += (job_group_allowance.value / 100) * self.base_salary
+            value = Decimal(job_group_allowance.value)
+            if job_group_allowance.calculation_type == "percentage":
+                total += (value / Decimal(100)) * Decimal(self.base_salary)
             else:  # Fixed amount
-                total += job_group_allowance.value
+                total += value
         return total
 
     def calculate_total_deductions(self):
         """Calculate the total deductions for this job group."""
-        total = 0
+        total = Decimal(0)
         for job_group_deduction in self.jobgroupdeduction_set.all():
-            deduction = job_group_deduction.deduction
-            if deduction.calculation_type == "percentage":
-                total += (job_group_deduction.value / 100) * self.base_salary
+            value = Decimal(job_group_deduction.value)
+            if job_group_deduction.calculation_type == "percentage":
+                total += (value / Decimal(100)) * Decimal(self.base_salary)
             else:  # Fixed amount
-                total += job_group_deduction.value
+                total += value
         return total
 
     def calculate_net_salary(self):
         """Calculate the net salary after applying allowances and deductions."""
-        net_salary = (
-            self.base_salary
-            + self.calculate_total_allowances()
-            - self.calculate_total_deductions()
-        )
+        base_salary = Decimal(self.base_salary)
+        total_allowances = self.calculate_total_allowances()
+        total_deductions = self.calculate_total_deductions()
+        net_salary = base_salary + total_allowances - total_deductions
         return net_salary
 
     def __str__(self):

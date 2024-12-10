@@ -2,12 +2,18 @@
      id="employees"
      role="tabpanel"
      aria-labelledby="employees-tab">
-  <div class="d-flex justify-content-end mb-3">
+  <div class="d-flex justify-content-end mb-3 gap-2">
     <button class="btn btn-sm text-white"
             data-bs-toggle="modal"
             data-bs-target="#addEmployeeModal"
             style="background-color: #3626a7">
       <i class="bi bi-plus-circle"></i> Add Employee
+    </button>
+    <!-- Delete All Employees Button -->
+    <button class="btn btn-sm text-white bg-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteAllEmployeesModal">
+      <i class="bi bi-trash"></i> Delete All Employees
     </button>
   </div>
   <table id="employeesTable"
@@ -42,14 +48,23 @@
             {% endif %}
           </td>
           <td>
-            <!-- Trigger Modal -->
+            <!-- Edit Button -->
             <button type="button"
                     class="btn btn-primary btn-sm"
                     data-bs-toggle="modal"
-                    data-bs-target="#editEmployeeModal-{{ employee.id_number }}">Edit</button>
+                    data-bs-target="#editEmployeeModal-{{ employee.id_number }}">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <!-- Delete Button -->
+            <button type="button"
+                    class="btn btn-danger btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteEmployeeModal-{{ employee.id_number }}">
+              <i class="bi bi-trash"></i>
+            </button>
           </td>
         </tr>
-        <!-- Modal for Each Employee -->
+        <!-- Edit Employee Modal -->
         <div class="modal fade"
              id="editEmployeeModal-{{ employee.id_number }}"
              tabindex="-1"
@@ -191,7 +206,66 @@
             </div>
           </div>
         </div>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+        <!-- Delete Employee Modal -->
+        <div class="modal fade"
+             id="deleteEmployeeModal-{{ employee.id_number }}"
+             tabindex="-1"
+             aria-labelledby="deleteEmployeeModalLabel-{{ employee.id_number }}"
+             aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="POST" action="{% url 'delete_employee' employee.id_number %}">
+                {% csrf_token %}
+                <div class="modal-header text-white bg-danger">
+                  <h5 class="modal-title"
+                      id="deleteEmployeeModalLabel-{{ employee.id_number }}">Delete Employee</h5>
+                  <button type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    Are you sure you want to delete the employee <strong>{{ employee.first_name }} {{ employee.last_name }}</strong>?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Delete All Employees Modal -->
+  <div class="modal fade"
+       id="deleteAllEmployeesModal"
+       tabindex="-1"
+       aria-labelledby="deleteAllEmployeesModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteAllEmployeesModalLabel">Delete All Employees</h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete all employees?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button"
+                  class="btn btn-danger"
+                  data-bs-dismiss="modal"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteAllEmployeesConfirmModal">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -5,13 +5,45 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Allowance, Branch, Deduction, Department, Employee, JobGroup
+from .models import (
+    Allowance,
+    Branch,
+    Deduction,
+    Department,
+    Employee,
+    JobGroup,
+    JobGroupAllowance,
+    JobGroupDeduction,
+)
 
 
 # Renders the admin dashboard
 @login_required(login_url="/login_admin/")
 def admin_dashboard(request):
-    return render(request, "layouts/admin_dashboard.html")
+    # Fetch number of employees, job groups, departments and branches
+    employees = Employee.objects.all()
+    job_groups = JobGroup.objects.all()
+    departments = Department.objects.all()
+    branches = Branch.objects.all()
+
+    # Store the length of each list
+    num_employees = len(employees)
+    num_job_groups = len(job_groups)
+    num_departments = len(departments)
+    num_branches = len(branches)
+
+    context = {
+        "employees": employees,
+        "job_groups": job_groups,
+        "departments": departments,
+        "branches": branches,
+        "num_employees": num_employees,
+        "num_job_groups": num_job_groups,
+        "num_departments": num_departments,
+        "num_branches": num_branches,
+    }
+
+    return render(request, "layouts/admin_dashboard.html", context)
 
 
 # Admin Dashboard Login
@@ -57,29 +89,56 @@ def contact_admin(request):
 
 
 def admin_tables(request):
-    # Add Employee form dropdown data
+    # Fetch employees and other dropdown data
     employees = Employee.objects.select_related(
         "job_group", "department", "branch"
     ).all()
     job_groups = JobGroup.objects.all()
-
     departments = Department.objects.all()
     branches = Branch.objects.all()
     users = User.objects.all()
-
-    # Fetch Allowance data
     allowances = Allowance.objects.all()
-    # Get the deductions
     deductions = Deduction.objects.all()
+
+    # Handle filtering by job group, department, or branch if provided
+    job_group_filter = request.GET.get("job_group", None)
+    department_filter = request.GET.get("department", None)
+    branch_filter = request.GET.get("branch", None)
+
+    # Apply filters if they exist
+    if job_group_filter:
+        job_groups = job_groups.filter(id=job_group_filter)
+    if department_filter:
+        job_groups = job_groups.filter(department__id=department_filter)
+    if branch_filter:
+        job_groups = job_groups.filter(branch__id=branch_filter)
+
+    # Pre-fetch job group allowances and deductions
+    job_group_data = []
+    for job_group in job_groups:
+        # Fetch allowances and deductions associated with each job group
+        job_group_allowances = JobGroupAllowance.objects.filter(job_group=job_group)
+        job_group_deductions = JobGroupDeduction.objects.filter(job_group=job_group)
+        job_group_data.append(
+            {
+                "job_group": job_group,
+                "job_group_allowances": job_group_allowances,
+                "job_group_deductions": job_group_deductions,
+            }
+        )
 
     context = {
         "employees": employees,
         "job_groups": job_groups,
+        "job_group_data": job_group_data,
         "departments": departments,
         "branches": branches,
         "users": users,
         "allowances": allowances,
         "deductions": deductions,
+        "job_group_filter": job_group_filter,
+        "department_filter": department_filter,
+        "branch_filter": branch_filter,
     }
 
     return render(request, "layouts/admin_tables.html", context)
@@ -171,6 +230,19 @@ def edit_employee(request, id_number):
     )
 
 
+# Delete Employee
+def delete_employee(request, id_number):
+    employee = get_object_or_404(Employee, id_number=id_number)
+    if request.method == "POST":
+        employee.delete()
+        messages.success(
+            request,
+            f"Employee '{employee.first_name} {employee.last_name}' deleted successfully!",
+        )
+        return redirect("admin_tables")
+    return redirect("admin_tables")
+
+
 # Add Allowance
 def add_allowance(request):
     if request.method == "POST":
@@ -228,10 +300,10 @@ def add_department(request):
 def add_branch(request):
     if request.method == "POST":
         name = request.POST["name"]
-        location = request.POST["location"]
+        address = request.POST["address"]
 
         # Create and save the new branch
-        Branch.objects.create(name=name, location=location)
+        Branch.objects.create(name=name, address=address)
 
         messages.success(request, "Branch added successfully!")
         return redirect("admin_tables")
@@ -364,4 +436,35 @@ def delete_deduction(request, id):
         messages.success(request, f"Deduction '{deduction.name}' deleted successfully!")
         return redirect("admin_tables")
 
+    return redirect("admin_tables")
+
+
+# Delete Job Group
+def delete_job_group(request, id):
+    job_group = get_object_or_404(JobGroup, id=id)
+    if request.method == "POST":
+        job_group.delete()
+        messages.success(
+            request,
+            f"Job Group '{job_group.name}' deleted successfully!",
+        )
+        return redirect("admin_tables")
+    return redirect("admin_tables")
+
+
+# Delete All Job Groups
+def delete_all_job_groups(request):
+    if request.method == "POST":
+        JobGroup.objects.all().delete()
+        messages.success(request, "All job groups deleted successfully!")
+        return redirect("admin_tables")
+    return redirect("admin_tables")
+
+
+# Delete All Employees
+def delete_all_employees(request):
+    if request.method == "POST":
+        Employee.objects.all().delete()
+        messages.success(request, "All employees deleted successfully!")
+        return redirect("admin_tables")
     return redirect("admin_tables")

@@ -3,12 +3,18 @@
      id="job-groups"
      role="tabpanel"
      aria-labelledby="job-groups-tab">
-  <div class="d-flex justify-content-end mb-3">
+  <div class="d-flex justify-content-end mb-3 gap-2">
     <button class="btn btn-sm text-white"
             data-bs-toggle="modal"
             data-bs-target="#addJobGroupModal"
             style="background-color: #3626a7">
       <i class="bi bi-plus-circle"></i> Add Job Group
+    </button>
+    <!-- Delete All Job Groups Button -->
+    <button class="btn btn-sm btn-danger text-white"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteAllJobGroupsModal">
+      <i class="bi bi-trash"></i> Delete All Job Groups
     </button>
   </div>
   <table id="jobGroupsTable"
@@ -24,33 +30,110 @@
       </tr>
     </thead>
     <tbody>
-      {% for job_group in job_groups %}
+      {% for job_group_data in job_group_data %}
         <tr>
-          <td>{{ job_group.name }}</td>
-          <td>KES {{ job_group.base_salary|floatformat:2|intcomma }}</td>
+          <td>{{ job_group_data.job_group.name }}</td>
+          <td>KES {{ job_group_data.job_group.base_salary|floatformat:2|intcomma }}</td>
           <td>
-            {% for allowance in job_group.allowances.all %}
-              <span>{{ allowance.name }}</span>
+            {% for allowance in job_group_data.job_group_allowances %}
+              <span>{{ allowance.allowance.name }} (
+                {% if allowance.calculation_type == 'percentage' %}
+                  {{ allowance.value }}% of Base Salary
+                {% else %}
+                  KES {{ allowance.value|floatformat:2|intcomma }}
+                {% endif %}
+              )</span>
               {% if not forloop.last %},{% endif %}
             {% endfor %}
           </td>
           <td>
-            {% for deduction in job_group.deductions.all %}
-              <span>{{ deduction.name }}</span>
+            {% for deduction in job_group_data.job_group_deductions %}
+              <span>{{ deduction.deduction.name }} (
+                {% if deduction.calculation_type == 'percentage' %}
+                  {{ deduction.value }}% of Base Salary
+                {% else %}
+                  KES {{ deduction.value|floatformat:2|intcomma }}
+                {% endif %}
+              )</span>
               {% if not forloop.last %},{% endif %}
             {% endfor %}
           </td>
-          <td>KES {{ job_group.calculate_net_salary|floatformat:2|intcomma }}</td>
+          <td>KES {{ job_group_data.job_group.calculate_net_salary|floatformat:2|intcomma }}</td>
           <td>
-            <button class="btn btn-sm btn-warning edit-btn" data-id="{{ job_group.id }}">
+            <!-- Edit Button -->
+            <button class="btn btn-sm btn-warning edit-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editJobGroupModal-{{ job_group_data.job_group.id }}">
               <i class="bi bi-pencil"></i>
             </button>
-            <button class="btn btn-sm btn-danger delete-btn" data-id="{{ job_group.id }}">
+            <!-- Delete Button -->
+            <button class="btn btn-sm btn-danger delete-btn"
+                    data-id="{{ job_group_data.job_group.id }}"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteJobGroupModal{{ job_group_data.job_group.id }}">
               <i class="bi bi-trash"></i>
             </button>
           </td>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+        <!-- Delete Job Group Modal -->
+        <div class="modal fade"
+             id="deleteJobGroupModal{{ job_group_data.job_group.id }}"
+             tabindex="-1"
+             aria-labelledby="deleteJobGroupModalLabel"
+             aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="POST"
+                    action="{% url 'delete_job_group' job_group_data.job_group.id %}">
+                {% csrf_token %}
+                <div class="modal-header text-white bg-danger">
+                  <h5 class="modal-title" id="deleteJobGroupModalLabel">Delete Job Group</h5>
+                  <button type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    Are you sure you want to delete the job group <strong>{{ job_group_data.job_group.name }}</strong>?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Delete All Job Groups Modal -->
+  <div class="modal fade"
+       id="deleteAllJobGroupsModal"
+       tabindex="-1"
+       aria-labelledby="deleteAllJobGroupsModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="deleteAllJobGroupsModalLabel">Delete All Job Groups</h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete all job groups?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <form action="{% url 'delete_all_job_groups' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

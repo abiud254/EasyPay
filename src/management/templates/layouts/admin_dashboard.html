@@ -1,4 +1,5 @@
-{% extends "layouts/admin_dashboard.html" %}
+{% extends "layouts/admin_dashboard_layout.html" %}
+{% load humanize %}
 {% load static %}
 {% block title %}
   <title>Admin Dashboard | EasyPay</title>
@@ -53,6 +54,82 @@
           </div>
         </div>
       </nav>
+      <!-- Cards -->
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card card1">
+            <div class="card-body">
+              <div class="align-items-center">
+                <i class="bi bi-people-fill" style="font-size: 1.8rem"></i>
+                <h5 class="card-title mb-0" style="font-size: 1.3rem;">Employees</h5>
+              </div>
+              <h3 class="fw-bold" style="font-size: 1.5rem;">{{ num_employees }}</h3>
+            </div>
+            <div class="card-footer p-0">
+              <a href="{% url 'admin_tables' %}"
+                 class="d-flex justify-content-between align-items-center btn btn-primary w-100 text-decoration-none py-2 px-3">
+                <span class="text-white">View Employees</span>
+                <i class="bi bi-chevron-right text-white"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card2">
+            <div class="card-body">
+              <div class="align-items-center">
+                <i class="bi bi-briefcase" style="font-size: 1.8rem;"></i>
+                <h5 class="card-title mb-0" style="font-size: 1.3rem;">Job Groups</h5>
+              </div>
+              <h3 class="fw-bold" style="font-size: 1.5rem;">{{ num_job_groups }}</h3>
+            </div>
+            <div class="card-footer p-0">
+              <a onclick="navigateToTab('job-groups-tab')"
+                 class="d-flex justify-content-between align-items-center btn btn-primary w-100 text-decoration-none py-2 px-3">
+                <span class="text-white">View Job Groups</span>
+                <i class="bi bi-chevron-right text-white"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card3">
+            <div class="card-body">
+              <div class="align-items-center">
+                <i class="bi bi-building" style="font-size: 1.8rem"></i>
+                <h5 class="card-title mb-0" style="font-size: 1.3rem;">Departments</h5>
+              </div>
+              <h3 class="fw-bold" style="font-size: 1.5rem;">{{ num_departments }}</h3>
+            </div>
+            <div class="card-footer p-0">
+              <a href="{% url 'admin_tables' %}"
+                 class="d-flex justify-content-between align-items-center btn btn-primary w-100 text-decoration-none py-2 px-3">
+                <span class="text-white">View Departments</span>
+                <i class="bi bi-chevron-right text-white"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card card4">
+            <div class="card-body">
+              <div class="align-items-center">
+                <i class="bi bi-buildings" style="font-size: 1.8rem"></i>
+                <h5 class="card-title mb-0" style="font-size: 1.3rem;">Branches</h5>
+              </div>
+              <h3 class="fw-bold" style="font-size: 1.5rem;">{{ num_branches }}</h3>
+            </div>
+            <div class="card-footer p-0">
+              <a href="{% url 'admin_tables' %}"
+                 class="d-flex justify-content-between align-items-center btn btn-primary w-100 text-decoration-none py-2 px-3">
+                <span class="text-white">View Branches</span>
+                <i class="bi bi-chevron-right text-white"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
+  <script src="{% static 'js/tab_navigation.js' %}"></script>
 {% endblock content %}

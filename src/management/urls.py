@@ -14,6 +14,11 @@ urlpatterns = [
         management_views.edit_employee,
         name="edit_employee",
     ),
+    path(
+        "employee/delete/<str:id_number>/",
+        management_views.delete_employee,
+        name="delete_employee",
+    ),
     path("add_allowance/", management_views.add_allowance, name="add_allowance"),
     path(
         "allowance/edit/<int:id>/",
@@ -56,5 +61,20 @@ urlpatterns = [
         "delete_deduction/<int:id>/",
         management_views.delete_deduction,
         name="delete_deduction",
+    ),
+    path(
+        "delete_job_group/<int:id>/",
+        management_views.delete_job_group,
+        name="delete_job_group",
+    ),
+    path(
+        "delete_all_job_groups/",
+        management_views.delete_all_job_groups,
+        name="delete_all_job_groups",
+    ),
+    path(
+        "delete_all_employees/",
+        management_views.delete_all_employees,
+        name="delete_all_employees",
     ),
 ]
