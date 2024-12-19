@@ -20,162 +20,234 @@ a:hover {
 
 /* Navbar */
 .navbar-brand h1 {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   color: #3626a7;
   font-weight: bold;
   margin-top: 10px;
 }
 .nav .btn {
   font-size: 1.1rem;
+  border-radius: 10px;
 }
-.nav-admin-btn {
-  color: #3626a7;
-  background-color: transparent;
-  border: 3px solid #3626a7;
-  border-radius: 0;
-  padding: 5;
+
+.admin-btn,
+.employee-btn {
+  border: 2px solid transparent; /* Transparent border by default */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
-.nav-admin-btn:hover {
+.admin-btn {
   color: #fff;
   background-color: #3626a7;
 }
-
-.nav-employee-btn {
-  color: #1d537d;
+.admin-btn:hover {
+  color: #3626a7;
+  border: 2px solid #3626a7;
   background-color: transparent;
-  border: 3px solid #1d537d;
-  border-radius: 0;
-  padding: 5;
 }
-.nav-employee-btn:hover {
+
+.employee-btn {
   color: #fff;
   background-color: #1d537d;
+  padding: 5;
+}
+.employee-btn:hover {
+  color: #1d537d;
+  border: 2px solid #1d537d;
+  background-color: transparent;
 }
 
 /* Hero Section */
 .hero-section {
   margin: 0 auto;
   padding: 10px;
-}
-.hero-container {
-  display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  gap: 5px; /* Controls space between text elements */
+  position: relative;
 }
 
 .hero-title {
   color: #0d0106;
   letter-spacing: -0.5px;
-  font-size: 2.8rem;
+  font-size: 2.2rem;
   font-weight: bold;
-  line-height: 1.3;
 }
-.hero-title span {
+span.brand-1 {
   color: #3626a7;
-  font-weight: bolder;
-  font-size: 5rem;
+}
+span.brand-2 {
+  color: #1d537d;
 }
 .hero-description {
-  color: #0d0106;
   font-size: 1.2rem;
+  line-height: 1.6;
+  color: #212529;
   letter-spacing: -0.5px;
 }
-.hero-question-container {
+
+.image-container {
+  gap: 20px;
   justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
 }
-.hero-question {
-  color: #3626a7;
-  font-size: 1.5rem;
-  font-weight: bold;
+/* General image styling */
+.admin-img,
+.employee-img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #0d0106;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
-.hero-btn {
+/* Hover effect for admin image */
+/* .admin-image:hover .admin-img, */
+.admin-hero-btn:hover ~ .admin-img {
+  transform: scale(1.05); /* Slight zoom effect */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Hover effect for employee image */
+/* .employee-image:hover .employee-img, */
+.employee-hero-btn:hover ~ .employee-img {
+  transform: scale(1.05); /* Slight zoom effect */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+/* Button styles (unchanged) */
+.admin-hero-btn,
+.employee-hero-btn {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.admin-hero-btn {
+  color: #fff;
+  background-color: #3626a7;
+}
+
+.admin-hero-btn:hover {
+  color: #3626a7;
+  border: 2px solid #3626a7;
+  background-color: transparent;
+}
+
+.employee-hero-btn {
   color: #fff;
   background-color: #1d537d;
-  border: 3px solid #1d537d;
-  border-radius: 0;
-  padding: 10px;
-  width: 30%;
-}
-.hero-btn:hover {
-  color: #3626a7;
-  background-color: transparent;
-  border: 3px solid #3626a7;
+  padding: 5;
 }
 
-/* Action Cards */
-.action-cards {
-  background-color: #3626a7;
+.employee-hero-btn:hover {
+  color: #1d537d;
+  border: 2px solid #1d537d;
+  background-color: transparent;
 }
-.card {
-  border: none;
-  background-color: #dbdbdb;
-  font-size: 1.1rem;
-  font-weight: bold;
+
+/* Benefits */
+card {
   border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  width: 300px;
+  height: 300px;
 }
-.card:hover {
-  top: -5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-.card1 h5 {
-  color: #3626a7;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-.card2 h5 {
-  color: #1d537d;
-  font-size: 1.3rem;
-  font-weight: bold;
-}
-.card-btn1 {
-  color: #ffffff;
+
+.benefit-card1 {
   background-color: #3626a7;
-  border: 3px solid #3626a7;
-  border-radius: 0;
-  padding: 10px;
+  color: white;
 }
-.card-btn1:hover {
-  color: #3626a7;
-  background-color: #ffffff;
-  border: 3px solid #3626a7;
-}
-.card-btn2 {
-  color: #ffffff;
+
+.benefit-card2 {
   background-color: #1d537d;
-  border: 3px solid #1d537d;
-  border-radius: 0;
-  padding: 10px;
+  color: white;
 }
-.card-btn2:hover {
-  color: #1d537d;
-  background-color: #ffffff;
-  border: 3px solid #1d537d;
+
+.benefit-card3 {
+  background-color: #632516;
+  color: white;
+}
+
+/* FAQ */
+/* Customize the accordion header buttons */
+.accordion-button {
+  background-color: #242424;
+  color: #ffffff;
+  border: none;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+/* On hover */
+.accordion-button:hover {
+  background-color: #1d537d;
+  color: #ffffff;
+}
+
+/* When active */
+.accordion-button:not(.collapsed) {
+  background-color: #1d537d;
+  color: #fff;
+  border: none;
+}
+
+/* Customize accordion body */
+.accordion-body {
+  background-color: #242424;
+  color: #ffffff;
+}
+
+/* Customize the border of accordion items */
+.accordion-item {
+  border: none;
+  margin-bottom: 10px;
 }
 
 /* Contact Us */
-.contact-us {
+.section-title {
+  color: #0d0106;
+}
+.underline {
+  width: 100px;
+  height: 5px;
   background-color: #1d537d;
+  margin-top: 5px;
+}
+.contact-info {
+  background-color: #3626a7;
   color: #ffffff;
+  border-radius: 10px;
 }
 .contact-us-social-icons a {
   color: #ffffff;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   margin-right: 10px;
 }
-.contact-us-btn {
-  color: #ffffff;
-  background-color: transparent;
-  border: 3px solid #ffffff;
-  border-radius: 0;
-  padding: 10px;
-  width: 100%;
+.contact-information h5 {
+  font-size: 1.2rem;
+  font-weight: 600;
 }
-.contact-us-btn:hover {
-  color: #1d537d;
-  background-color: #ffffff;
-  border: 3px solid #ffffff;
+.get-in-touch {
+  background-color: #1d537d;
+  color: #ffffff;
+  border-radius: 10px;
+}
+.get-in-touch-btn-container {
+  display: flex;
+  justify-content: center;
+}
+.get-in-touch-btn {
+  height: 50px;
+  border-radius: 10px;
+  background-color: #3626a7;
+  border-color: #dbdbdb;
+  color: #ffffff;
+}
+.get-in-touch-btn:hover {
+  background-color: #241983;
+  border-color: #dbdbdb;
+}
+
+/* Footer */
+footer {
+  background-color: #0d0106;
+  color: #ffffff;
 }
